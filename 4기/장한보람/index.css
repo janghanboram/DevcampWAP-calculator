@@ -1,0 +1,108 @@
+
+body:before{
+    /* 
+        This code block is from instagram brand home
+    */
+    position: fixed;
+    height: 140vh;
+    width: 140vw;
+    background-color: white;
+    background-image: linear-gradient(-135deg,#1400c8,#b900b4,#f50000);
+    background-size: 140vw 140vh;
+    z-index: -1;
+    transform: translateZ(0);
+    top: 0;
+    left: 0;
+    content: '';
+}
+.pm-header{
+    text-align: center;
+    color: white;
+}
+.pm-body{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.default-input-style{
+    width: 270px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 2rem;
+    background-color: transparent;
+    color: white;
+    border: 0;
+    border-bottom: solid 1px white;
+}
+.pm-container{
+    border: solid 1px white;
+    padding: 25px;
+    border-radius: 5px;
+    margin: 10px
+}
+
+/* pm-control-panel */
+.pm-control-panel{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+.pm-control-item .pm-btn{
+    color: #d93175;
+    width: 135px;
+    height: 135px;
+    font-size: 2rem;
+    border-radius: 5px;
+}
+.pm-control-item .pm-btn:hover{
+    color: #5a26c0;
+}
+
+/* pm-result-panel */
+.pm-result-panel{
+    margin-top: 15px;
+}
+.pm-result-panel .pm-result-item{
+    width: 100%
+}
+.pm-result-container .pm-label{
+    color: white;
+    text-align: left;
+    margin: 0; 
+}
+.pm-result-panel .pm-result-item .pm-btn{
+    width: 100%;
+    height: 70px;
+}
+.pm-process-panel .pm-process-item{
+    height: 265px;
+}
+.pm-process-item .pm-process-list{
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    color: white;
+    height: 200px;
+    overflow-y: scroll;
+    text-align: right;
+    list-style-type: none;
+    border: solid 1px white;
+    opacity: 0.8;
+}
+/* placeholder style*/
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color:white;
+    opacity: 0.5; /* Firefox */
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: white;
+    opacity: 0.5; /* Firefox */
+    
+}
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: white;
+    opacity: 0.5; /* Firefox */
+    
+}

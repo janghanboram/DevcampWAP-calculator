@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Calculator 플마</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="pm-header">
+        <h1>+,-</h1>        
+    </div>
+
+    <div class="pm-body">
+        <div class="pm-control-container pm-container">
+            <div class="pm-input-panel">
+                <div class="pm-input-item">
+                    <input type="number" class="default-input-style pm-input" id="user-input" placeholder="0">
+                </div>
+            </div>
+            <div class="pm-control-panel">
+                <div class="pm-control-item">
+                    <button class="pm-btn btn-plus" id="btn-plus" onclick="addNumber()" >+</button>
+                </div>
+                <div class="pm-control-item">
+                    <button class="pm-btn btn-minus" id="btn-minus" onclick="subNumber()" >-</button>
+                </div>
+            </div>
+            <div class="pm-result-panel">
+                <div class="pm-control-item">
+                    <button class="pm-btn btn-result" id="btn-result" onclick="showResultInput()" >=</button>
+                </div>
+            </div>
+        </div>
+        <div class="pm-result-container pm-container">
+                <div class="pm-process-panel">
+                        <div class="pm-process-item">
+                            <p class="pm-label">Process</p>
+                            <ul class="pm-process-list" id="process-container">
+                            </ul>
+                        </div>
+                </div>
+            <div class="pm-result-panel">
+                    <div class="pm-result-item pm-result">
+                        <p class="pm-label">Result</p>
+                        <input type="number" class="default-input-style pm-result-input" id="result-input" disabled>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var input = document.getElementById('user-input');
+        var btnPlus = document.getElementById('btn-plus');
+        var btnMinus = document.getElementById('btn-minus');
+        var btnResult = document.getElementById('btn-result');
+        var resultInput = document.getElementById('result-input');
+        var processContainer = document.getElementById('process-container');
+        
+        var formula = {
+            previous: null,
+            operator: null,
+            current: null
+        }
+
+        var formulaList = [];
+        var processIndex = 0;
+
+        input.addEventListener('change',function () {
+            
+            if(formula.previous == null && formula.operator == null){
+                if(resultInput.value.length){
+                    while(processContainer.hasChildNodes())
+                        processContainer.removeChild(processContainer.lastChild)
+                }
+            }
+
+            //reset result value
+            resultInput.value = '';            
+            
+            switch(formula.operator){
+                case null:
+                    formula.previous = Number(input.value);
+                    formulaList[processIndex] = formula.previous;
+                    updateProcess(false);
+                break;                    
+
+                case '+':
+                    formula.current = Number(input.value);
+                    formulaList.push(formula.current);
+                    processIndex++;
+                    updateProcess(false,formula.current);                                        
+                    formula.previous = formula.previous + formula.current;
+                    formula.current = null;
+                    formula.operator = null;
+                break;
+            
+                case '-':
+                    formula.current = Number(input.value);
+                    formulaList.push(formula.current);
+                    processIndex++;
+                    updateProcess(false,formula.current);                                        
+                    formula.previous = formula.previous - formula.current;
+                    formula.current = null;
+                    formula.operator = null;
+                break;
+            }
+            input.placeholder = formula.previous;
+            input.value = "";
+
+            console.log(processIndex, formula,formulaList);                      
+            
+        })
+
+        function addNumber(){
+            //입력값 없음
+            if(formula.previous == null){
+                alert("연산할 숫자를 입력하세요");
+            }else{
+                formula.operator = '+';
+                
+                switch(formulaList[formulaList.length-1]){
+                    case '+':
+                        break;
+                    
+                    case '-':
+                        formulaList[formulaList.length-1] = '+';
+                        updateProcess(false,'+');                    
+                        break;
+                    
+                    default:
+                        processIndex++;
+                        formulaList.push('+');
+                        updateProcess(true);                    
+                }
+            }        
+        }
+
+        function subNumber(){
+            //입력값 없음
+            if(formula.previous == null){
+                alert("연산할 숫자를 입력하세요");
+            }else{
+                formula.operator = '-';
+                
+                switch(formulaList[formulaList.length-1]){
+                    case '-':
+                        break;
+                    
+                    case '+':
+                        formulaList[formulaList.length-1] = '-';
+                        updateProcess(false,'-');                    
+                        break;
+                    
+                    default:
+                        processIndex++;                    
+                        formulaList.push('-');
+                        updateProcess(true);                    
+                }
+            }        
+        }
+
+        function showResultInput(){
+
+            if(formula.operator == null){
+                resultInput.value = formula.previous == null ? 0 : formula.previous;
+                formulaList.push("=",resultInput.value);
+                                            
+            }else{
+                // apple calulator rule
+                // 연산이 '+' 또는 '-'로 끝났을 경우 애플 내장 계산기의 결과값을 참고했음.
+                // case 1 : 10 + = , 10 + 10 = 20
+                // case 2 : 10 - = , 10 - 10 = 0
+                // resultInput.value = formula.operator == '+' ? formula.previous *2 : 0;
+                if(formula.operator == '+'){
+                    resultInput.value = formula.previous *2;                  
+                }else{
+                    resultInput.value = 0;
+                }
+
+                updateProcess(false,formula.previous);
+                formulaList.push(formula.previous, "=",resultInput.value);
+
+                alert("연산이 '+' 또는 '-'로 끝났을 경우 애플 내장 계산기의 결과값을 참고했음.\n case 1 : 10 + = , 10 + 10 = 20\n case 2 : 10 - = , 10 - 10 = 0")                
+            }
+
+            //initialize reset
+            formula.previous = null;
+            formula.operator = null;
+            formula.current = null;
+            input.placeholder = 0;
+            input.value = "";
+            formulaList = [];
+            processIndex = 0;
+        }
+
+        //formulaList의 요소가 업데이트 될 때마다 같이 업데이트
+        function updateProcess(createdNewNode,value = null){            
+            //무조건 새로운 노드를 만들 때
+            if(createdNewNode){
+                var li = document.createElement('li');
+                var text = document.createTextNode(formulaList[processIndex]);
+                li.appendChild(text);
+                processContainer.appendChild(li);
+                scrollAuto();                
+            }else{
+                //노드가 하나도 없을 때는, 무조건 하나를 만들어준다.
+                //해당 노드의 내용이 변경될 수 있음 - 입력한 숫자값
+                if(processContainer.childElementCount === 0){
+                    var li = document.createElement('li');
+                    var text = document.createTextNode(formulaList[0]);
+                    li.appendChild(text);
+                    processContainer.appendChild(li);
+                    scrollAuto();                
+                }else{
+
+                    switch(value){
+                        //'+' '-' 연산 바꿈
+                        case '+':
+                        case '-':
+                            processContainer.lastChild.innerHTML = value;
+                        break;
+                        
+                        //단일 숫자
+                        case null:
+                            processContainer.lastChild.innerHTML = formula.previous;
+                        break;
+                        
+                        //연산 기호 + 단일 숫자
+                        default:
+                            processContainer.lastChild.innerHTML += value;
+                        break;
+                    }
+                     
+                }
+            }
+        }
+
+        //process list 스크롤 이동
+        function scrollAuto(){
+            if(processContainer.scrollHeight >processContainer.clientHeight){
+                processContainer.scrollTop += 30
+            }
+        }
+
+        
+        
+    </script>
+    
+    
+</body>
+</html>
